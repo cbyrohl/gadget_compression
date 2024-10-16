@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "gadget-compression"
+version = "0.1.0"
+description = ""
+authors = ["Chris Byrohl <9221545+cbyrohl@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "gadget_compression", from = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+h5py = "^3.12.1"
+hdf5plugin = "^5.0.0"
+typer = "^0.12.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
