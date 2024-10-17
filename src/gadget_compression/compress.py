@@ -11,17 +11,19 @@ app = typer.Typer()
 prefix = "snap_"
 nworkers = 8
 precision_default = 8  # for zfp
+pointwise_relative_default = 0.05  # for sz
 
 def get_compression(dset):
     key = dset.name
     if "int" in str(dset.dtype):
-        compression = hdf5plugin.Blosc2(cname="zstd", clevel=5, filters=1)
+        compression = hdf5plugin.Blosc2(cname="zstd", clevel=4, filters=1)
         return compression
     if key.endswith("Coordinates") or key.endswith("Pos"):  # dont care about CoM...: "or key.endswith("CenterOfMass"):"
         # dont want any lossy compression here
-        return hdf5plugin.Zfp(reversible=True)
-    # otherwise use <1% relative error with ~7bits
-    compression = hdf5plugin.Zfp(precision=precision_default)
+        compression = hdf5plugin.Blosc2(cname="zstd", clevel=4, filters=1)
+        return compression
+    #compression = hdf5plugin.Zfp(precision=precision_default)
+    compression=hdf5plugin.SZ(pointwise_relative=pointwise_relative_default)
     return compression
 
 
@@ -46,7 +48,10 @@ def compress_file(file, inputpath, outputpath):
 
     # make sure outputpath exists
     if not os.path.exists(outputpath):
-        os.makedirs(outputpath)
+        try:
+            os.makedirs(outputpath)
+        except FileExistsError:
+            pass
     # create new file
     hf_out = h5py.File(os.path.join(outputpath, file), "w")
 
