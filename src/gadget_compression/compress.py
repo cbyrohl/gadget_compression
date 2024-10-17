@@ -85,12 +85,17 @@ def compare_fields(file, field, inputpath, outputpath, op=np.max):
 
 @app.command()
 def compress_snapshot(path_in: str, path_out: str):
-    files = [f for f in os.listdir(path_in) if f.startswith(prefix)]
+    # check if path_in is a folder
+    if not os.path.isdir(path_in):
+        assert os.path.isfile(path_in)
+        files = [path_in]
+    else:
+        files = [f for f in os.listdir(path_in) if f.startswith(prefix)]
 
     nbytes_in_list = []
     nbytes_out_list = []
 
-    mapfunc = partial(compress_file, inputpath=inputpath, outputpath=path_out)
+    mapfunc = partial(compress_file, inputpath=path_in, outputpath=path_out)
 
     with ProcessPoolExecutor(max_workers=nworkers) as executor:
         tasks = executor.map(mapfunc, files)
