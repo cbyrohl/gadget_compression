@@ -88,7 +88,10 @@ def compress_snapshot(path_in: str, path_out: str):
     # check if path_in is a folder
     if not os.path.isdir(path_in):
         assert os.path.isfile(path_in)
-        files = [path_in]
+        # take base file in folder
+        filename = os.path.basename(path_in)
+        path_in = os.path.dirname(path_in)
+        files = [filename]
     else:
         files = [f for f in os.listdir(path_in) if f.startswith(prefix)]
 
