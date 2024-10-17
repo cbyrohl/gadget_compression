@@ -12,6 +12,8 @@ h5py = "^3.12.1"
 hdf5plugin = "^5.0.0"
 typer = "^0.12.5"
 
+[tool.poetry.scripts]
+gadgetcompress = "gadget_compression.compress:app"
 
 [build-system]
 requires = ["poetry-core"]
